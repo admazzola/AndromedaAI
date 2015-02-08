@@ -1,14 +1,15 @@
 import java.util.ArrayList;
 
 import bwapi.Position;
+import bwapi.Unit;
 
 
 public class Swarm {
 
 	
-	ArrayList<SuperUnit> units = new ArrayList<SuperUnit>();
+	ArrayList<Unit> units = new ArrayList<Unit>();
 
-	public ArrayList<SuperUnit> getUnits() {
+	public ArrayList<Unit> getUnits() {
 		return units;
 	}
 
@@ -17,8 +18,8 @@ public class Swarm {
 		return new Position(0,0);
 	}
 
-	public void add(SuperUnit mySuperUnit) {
-		units.add(mySuperUnit);
+	public void add(Unit myUnit) {
+		units.add(myUnit);
 		
 	}
 	

@@ -33,15 +33,15 @@ public class ArmyManager {
 		}
 
 		public void update() {
-			for(SuperUnit mySuperUnit : getNonWorkerUnits())
+			for(Unit unit : getNonWorkerUnits())
 			{
-				Unit unit = mySuperUnit.getUnit();
+			
 				
 				if(unitIsFighter(unit.getType())){
-					if(mySuperUnit.getSwarm() == null)
+					if(swarmManager.unitSwarmless(unit))
 					{
 						
-						swarmManager.addToSwarm(mySuperUnit);
+						swarmManager.addToSwarm(unit);
 						
 					}
 					
@@ -64,7 +64,7 @@ public class ArmyManager {
 					|| type == UnitType.Zerg_Lurker;
 		}
 
-		private ArrayList<SuperUnit> getNonWorkerUnits() {
+		private ArrayList<Unit> getNonWorkerUnits() {
 			return AndromedaAI.getUnitManager().allMyUnits;
 			
 		}

@@ -8,10 +8,11 @@ import bwapi.UnitType;
 public class UnitManager {
 	
 	    
-	  public   ArrayList<SuperUnit> allMyUnits = new ArrayList<SuperUnit>();
-	  public  ArrayList<SuperUnit> allMyLarvae = new ArrayList<SuperUnit>();
-	  public   ArrayList<SuperUnit> allMyEggs = new ArrayList<SuperUnit>();
-	  public  ArrayList<SuperUnit> allMyWorkers = new ArrayList<SuperUnit>();
+	  public   ArrayList<Unit> allMyUnits = new ArrayList<Unit>();
+	  
+	  public  ArrayList<Unit> allMyLarvae = new ArrayList<Unit>();
+	  public   ArrayList<Unit> allMyEggs = new ArrayList<Unit>();
+	  public  ArrayList<Unit> allMyWorkers = new ArrayList<Unit>();
 	  
 	  Game game;
 
@@ -48,10 +49,9 @@ public class UnitManager {
         }
    	
         
-        for (SuperUnit anyWorker : allMyWorkers) {
-        	Unit myWorker = anyWorker.getUnit();
+        for (Unit myWorker : allMyWorkers) {
         
-        	if(countGasHarvesters() < 3 && getUnitCount(UnitType.Zerg_Extractor) > 0 ) //need to have more gas harvesters.. maybe
+        	if(countGasHarvesters() < 3 && getUnitCount(UnitType.Zerg_Extractor) > 0 ) //gets laggy ? switchesa lot? maybe the swarm movin is laggy
         	{
         		System.out.println("trying to gather gas!!!!");
         		if(!myWorker.isGatheringGas()){   //this could cause issues with many refineies?
@@ -62,8 +62,7 @@ public class UnitManager {
        	
         }
         
-        for (SuperUnit anyWorker : allMyWorkers) {
-        	Unit myWorker = anyWorker.getUnit();
+        for (Unit myWorker : allMyWorkers) {
                 	
 
             //if it's a drone and it's idle, send it to the closest mineral patch
@@ -100,8 +99,8 @@ public class UnitManager {
 
 	private Unit getNearbyRefinery(Unit myWorker) {
 
-		 for (SuperUnit anyUnit : allMyUnits) {
-	        	Unit myUnit = anyUnit.getUnit();
+		 for (Unit myUnit : allMyUnits) {
+	        	
 	        	if(myUnit.getType().isRefinery()){
 	        		return myUnit;
 	        	}
@@ -113,8 +112,8 @@ public class UnitManager {
 	int countGasHarvesters() {
 		int count = 0;
 
-	    for (SuperUnit anyWorker : allMyWorkers) {
-        	Unit myWorker = anyWorker.getUnit();
+	    for (Unit myWorker : allMyWorkers) {
+        	
         	if(myWorker.isGatheringGas())
         	{
         		count++;
@@ -127,8 +126,7 @@ public class UnitManager {
 	private int getUnitCount(UnitType type) {
 		int count= 0;
 		
-		 for (SuperUnit myUnit : allMyUnits) {
-			 	Unit unit = myUnit.getUnit();
+		 for (Unit unit : allMyUnits) {
 			 	if(unit.getType().equals(type))
 			 	{
 			 		count++;
@@ -139,8 +137,8 @@ public class UnitManager {
 		return count;
 	}
 
-	private SuperUnit getLarvae() {
-        for (SuperUnit myLarvae : allMyLarvae) {
+	private Unit getLarvae() {
+        for (Unit myLarvae : allMyLarvae) {
         	return myLarvae;
         }
         
@@ -158,8 +156,8 @@ public class UnitManager {
 
 
         
-        for (SuperUnit myWorker : allMyWorkers) {
-        	Unit myUnit = myWorker.getUnit();
+        for (Unit myUnit : allMyWorkers) {
+        
        //try to get an idle worker
         	if ( myUnit.isIdle()) {
         	
@@ -168,8 +166,8 @@ public class UnitManager {
         
         }
         
-        for (SuperUnit myWorker : allMyWorkers) {
-        	Unit myUnit = myWorker.getUnit();
+        for (Unit myUnit : allMyWorkers) {
+        	
 
         	//try to get any worker
                         	
@@ -182,9 +180,9 @@ public class UnitManager {
 	}
 
 	boolean haveUnit(UnitType type) {
-		for(SuperUnit mySuperUnit : allMyUnits)
+		for(Unit unit : allMyUnits)
 		{
-			Unit unit = mySuperUnit.getUnit();
+			
 			if (unit.getType().equals(type)) {
     			return true;
     		}
@@ -210,10 +208,10 @@ public class UnitManager {
 
 	private int beingTrainedCount(UnitType type) {
 		int count =0;
-		for (SuperUnit myEgg : allMyEggs) {
+		for (Unit myEgg : allMyEggs) {
 			//Unit myUnit = myLarvae.getUnit(); 
     		
-    			if( type.equals(myEgg.getUnitTraining()) ){
+    			if( myEgg.getBuildType().equals(type )   ){
     				count++;
     			}
     		
@@ -253,8 +251,8 @@ public class UnitManager {
     	
     }
     
-
-    private SuperUnit findSuperUnit(Unit unit) {
+/*
+    private Unit findSuperUnit(Unit unit) {
 		
    
     	for(int i=0;i<allMyUnits.size();i++)
@@ -268,7 +266,7 @@ public class UnitManager {
 		return new SuperUnit(unit);
 	}
 
-
+*/
 
 
 
@@ -276,24 +274,24 @@ public class UnitManager {
 
 
 
-        SuperUnit superunit = findSuperUnit(unit);
+    //    SuperUnit superunit = findSuperUnit(unit);
         
-        removeUnitFromAllLists(superunit  );
+        removeUnitFromAllLists(unit  );
         
         if(unit.getType() == UnitType.Zerg_Larva)
         {        	
-        	allMyLarvae.add(superunit);        	
+        	allMyLarvae.add(unit);        	
         }else  if(unit.getType() == UnitType.Zerg_Egg)
         {        	
-        	allMyEggs.add(superunit);
+        	allMyEggs.add(unit);
         }else  if(unit.getType() == UnitType.Zerg_Drone)
         {
         	System.out.println("added worker " + unit);
-        	allMyWorkers.add(superunit);
+        	allMyWorkers.add(unit);
         }
         
         
-        allMyUnits.add(superunit);
+        allMyUnits.add(unit);
         System.out.println("added allunit " + unit);
        
         
@@ -304,11 +302,11 @@ public class UnitManager {
 
 
 
-	private void removeUnitFromAllLists(SuperUnit superunit) {
-		allMyLarvae.remove(superunit);
-		allMyEggs.remove(superunit);
-		allMyWorkers.remove(superunit);
-		allMyUnits.remove(superunit);
+	private void removeUnitFromAllLists(Unit unit) {
+		allMyLarvae.remove(unit);
+		allMyEggs.remove(unit);
+		allMyWorkers.remove(unit);
+		allMyUnits.remove(unit);
 	}
 
 
@@ -316,8 +314,8 @@ public class UnitManager {
 
 
 	public void unRegisterUnit(Unit unit) {
-		 SuperUnit superunit = findSuperUnit(unit);
-		removeUnitFromAllLists(superunit);
+		
+		removeUnitFromAllLists(unit);
 		
 	}
 

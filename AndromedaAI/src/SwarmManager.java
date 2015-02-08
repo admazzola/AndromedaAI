@@ -19,10 +19,10 @@ public class SwarmManager {
 		}
 	}
 
-	public void addToSwarm(SuperUnit mySuperUnit) {
-		Swarm swarm = getSwarmFor(mySuperUnit.getUnit().getType());
-		mySuperUnit.setSwarm(swarm);
-		swarm.add(mySuperUnit);
+	public void addToSwarm(Unit unit) {
+		Swarm swarm = getSwarmFor(unit.getType());
+		
+		swarm.add(unit);
 		
 	}
 
@@ -36,15 +36,20 @@ public class SwarmManager {
 	public void update() {
 		Swarm mySwarm =  swarms.get(0);
 		
-		for(SuperUnit superunit:mySwarm.getUnits())
+		for(Unit unit:mySwarm.getUnits())
 		{
-			Unit unit = superunit.getUnit();
+			
 			
 			unit.attack(mySwarm.getNextPosition() );
 			
 			
 		}
 		
+	}
+
+	public boolean unitSwarmless(Unit unit) {
+		
+		return !swarms.get(0).units.contains(unit);
 	}
 	 
 	 
