@@ -3,3 +3,8 @@
 /BuildOrderHelper.class
 /BuildingManager.class
 /SuperUnit.class
+/ArmyBuildHelper.class
+/SwarmManager.class
+/Swarm.class
+/Overmind.class
+/UnitManager.class

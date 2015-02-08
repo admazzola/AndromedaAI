@@ -21,6 +21,9 @@ public class BuildingManager {
 		
 		buildOrder.add(new BuildOrderHelper(UnitType.Zerg_Spawning_Pool, 9));
 		
+		buildOrder.add(new BuildOrderHelper(UnitType.Zerg_Extractor, 9));
+		
+		buildOrder.add(new BuildOrderHelper(UnitType.Zerg_Hydralisk_Den, 9));
 	}
 
 	// Returns a suitable TilePosition to build a given building type near 
@@ -76,6 +79,56 @@ public class BuildingManager {
 
 	public  ArrayList<BuildOrderHelper>  getBuildOrder() {
 		return buildOrder;
+	}
+
+	public BuildOrderHelper getCurrentBuildOrder() {
+
+
+		 for( BuildOrderHelper helper : getBuildOrder()  )
+	        {
+			 
+			 if(!AndromedaAI.getUnitManager().haveUnit(helper.getBuildingType() ) ){
+				 return helper;
+				        
+			 	}
+	        }
+		 
+		 
+		 
+		return null;
+	}
+
+	public void update() {
+
+
+
+        BuildOrderHelper helper = getCurrentBuildOrder();
+                     	
+        	if(getUnitManager().getWorkerCount() >= helper.getNumWorkersNeeded() ){
+        		
+        		if(getUnitManager().canAfford(helper.getBuildingType())){
+        			
+        			Unit builder = getUnitManager().getAvailableDrone();
+        			
+        			TilePosition buildTile = 
+            				getBuildTile(builder, helper.getBuildingType(), game.self().getStartLocation());
+        			
+        			if (buildTile != null) {
+        			
+        				builder.build(buildTile, helper.getBuildingType());
+        				
+        			}
+        			
+        			
+        		}
+        		
+        		
+        	}
+		
+	}
+
+	private UnitManager getUnitManager() {
+		return AndromedaAI.getUnitManager();
 	}
 	
 	

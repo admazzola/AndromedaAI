@@ -1,10 +1,13 @@
+import java.util.ArrayList;
+
 import bwapi.Unit;
 import bwapi.UnitType;
 
 
 public class SuperUnit{
 	Unit unit;
-
+	
+	Swarm mySwarm;
 	
 	UnitType unitTraining = null;
 	
@@ -24,6 +27,16 @@ public class SuperUnit{
 
 	public Unit getUnit() {
 		return unit;
+	}
+
+	public void setSwarm(Swarm swarm) {
+		mySwarm= swarm;
+		
+	}
+
+	public Swarm getSwarm() {
+		
+		return mySwarm;
 	}
 	
 }
