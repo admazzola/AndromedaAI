@@ -1,3 +1,4 @@
+package pack;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -14,7 +15,7 @@ public class AndromedaAI extends DefaultBWListener {
     private Player self;
     
 
-
+    static MutagenicStrategyManager stratManager;
     
     static BuildingManager buildManager;
      
@@ -103,6 +104,11 @@ public class AndromedaAI extends DefaultBWListener {
         	getUnitManager().unRegisterUnit(unit);
         
         }
+ 	   
+ 	  stratManager.unitDied(unit);
+ 	  
+ 	  armyManager.unitDied(unit);
+ 	   
     	/*
     	 if(  unit.getPlayer() == self ){
     	 SuperUnit superunit = findSuperUnit(unit);
@@ -137,7 +143,7 @@ public class AndromedaAI extends DefaultBWListener {
         self = game.self();
 
         
-        game.setLocalSpeed(20); //tourney speed
+        game.setLocalSpeed(20); //tourney speed..lower is faster
         
         
         //Use BWTA to analyze map
@@ -150,31 +156,56 @@ public class AndromedaAI extends DefaultBWListener {
         buildManager = new BuildingManager(game);
         armyManager = new ArmyManager(game);
         unitManager = new UnitManager(game);
+        
+        stratManager = new MutagenicStrategyManager(game);
+        
     }
     
   //  private HashSet enemyBuildingMemory = new HashSet();
-    
+   
+	@Override
+	public void onEnd(boolean won)
+	{
+		stratManager.gameEnded(won);
+	}
+	
+	
+	
+	long last_millis = System.currentTimeMillis();
 
     @Override
     public void onFrame() {
+    	
+    	    	
+    	long tpf = System.currentTimeMillis() - last_millis;
+    	last_millis = System.currentTimeMillis();
+    	
+    	
     
         game.setTextSize(10);
-        game.drawTextScreen(10, 10, "AndromedaAI playing as " + self.getName() + " - " + self.getRace());
+        game.drawTextScreen(10, 10, "AndromedaAI - " + tpf  + " - " + self.getRace());
 
         //StringBuilder units = new StringBuilder("My units:\n");
 
         //draw my units on screen
         game.drawTextScreen(10, 30, "workers:" + getUnitManager().getWorkerCount());
         game.drawTextScreen(10, 50, "gas harvesters:" + getUnitManager().countGasHarvesters());
-        game.drawTextScreen(10, 70, "tech:" +  buildManager.getCurrentBuildOrder().getBuildingType());
+        
+        game.drawTextScreen(10, 70, "num swarms:" + getArmyManager().swarms.size());
+        
+        game.drawTextScreen(10, 90, "num enemy buildings:" + getArmyManager().enemyBuildingMemory.size() );
+        
+        if(buildManager.getCurrentBuildOrder()!=null)
+        	game.drawTextScreen(10, 110, "tech:" +  buildManager.getCurrentBuildOrder().getBuildingType());
         
         
-        armyManager.update();
         
-        unitManager.update();
+        armyManager.update(tpf);
+        
+        unitManager.update(tpf);
     
         
-        buildManager.update();
+        buildManager.update(tpf);
         
         	
         	

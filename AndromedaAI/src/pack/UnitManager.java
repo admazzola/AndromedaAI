@@ -1,3 +1,4 @@
+package pack;
 import java.util.ArrayList;
 
 import bwapi.Game;
@@ -20,14 +21,15 @@ public class UnitManager {
 		this.game=game;
 	}
 
+	long counter = 0;
+
+	public void update(long tpf) {
+		counter+=tpf;
+		
 
 
-
-
-	public void update() {
-
-
-    
+		if(getLarvae()!=null)
+		{
         
         for(ArmyBuildHelper buildHelper :  AndromedaAI.getArmyManager().getBuildHelper()  )
         {
@@ -47,20 +49,30 @@ public class UnitManager {
         if(canAfford(UnitType.Zerg_Drone) && needMoreWorkers()){            	
         	getLarvae().train(UnitType.Zerg_Drone);    
         }
-   	
         
-        for (Unit myWorker : allMyWorkers) {
+		}
+		
+		if(counter > 1000)
+		{
+			counter=0;
+			
+			for (Unit myWorker : allMyWorkers) {
+		        
+	        	if(countGasHarvesters() < 3 && getUnitCount(UnitType.Zerg_Extractor) > 0 ) //gets laggy ? switchesa lot? maybe the swarm movin is laggy
+	        	{
+	        		System.out.println("trying to gather gas!!!!");
+	        		if(!myWorker.isGatheringGas()){   //this could cause issues with many refineies?
+	        			myWorker.gather( getNearbyRefinery(myWorker)   );
+	        			break;
+	        		}
+	        	}
+	       	
+	        }
+			
+		}
+		
         
-        	if(countGasHarvesters() < 3 && getUnitCount(UnitType.Zerg_Extractor) > 0 ) //gets laggy ? switchesa lot? maybe the swarm movin is laggy
-        	{
-        		System.out.println("trying to gather gas!!!!");
-        		if(!myWorker.isGatheringGas()){   //this could cause issues with many refineies?
-        			myWorker.gather( getNearbyRefinery(myWorker)   );
-        			break;
-        		}
-        	}
-       	
-        }
+        
         
         for (Unit myWorker : allMyWorkers) {
                 	
@@ -178,18 +190,26 @@ public class UnitManager {
         
 		return null;
 	}
+	
 
-	boolean haveUnit(UnitType type) {
+	public Unit getUnitOfType(UnitType type) {
+	
 		for(Unit unit : allMyUnits)
 		{
 			
 			if (unit.getType().equals(type)) {
-    			return true;
-    		}
+				return unit;
+			}
 		}
 		
+		
+		return null;
+	}
+
+
+	boolean haveUnit(UnitType type) {	
     	
-		return false;
+		return getUnitOfType(type) != null;
 	}
 
 	boolean canAfford(UnitType type) {
@@ -318,6 +338,10 @@ public class UnitManager {
 		removeUnitFromAllLists(unit);
 		
 	}
+
+
+
+
 
 
 }
